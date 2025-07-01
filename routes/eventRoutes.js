@@ -1,11 +1,24 @@
 const express = require('express');
 const router = express.Router();
-const { getEvents, createEvent, getNearbyEvents } = require('../controllers/eventController');
 const authMiddleware = require('../middleware/auth');
 
-router.get('/nearby', authMiddleware, getNearbyEvents); // rotta per eventi vicini
+const {
+    getEvents,
+    createEvent,
+    getNearbyEvents,
+    countByCategory,
+    closestEvents,         // <— assicurati ci sia
+    comprehensiveStats     // <— e questo
+} = require('../controllers/eventController');
 
-router.get('/', authMiddleware, getEvents);        // rotta protetta
-router.post('/', authMiddleware, createEvent);     // rotta protetta
+// Rotte geospaziali e statistiche
+router.get('/nearby',            authMiddleware, getNearbyEvents);
+router.get('/stats/category',    authMiddleware, countByCategory);
+router.get('/stats/closest',     authMiddleware, closestEvents);
+router.get('/stats/all',         authMiddleware, comprehensiveStats);
+
+// Rotte “classiche”
+router.get('/',                  authMiddleware, getEvents);
+router.post('/',                 authMiddleware, createEvent);
 
 module.exports = router;

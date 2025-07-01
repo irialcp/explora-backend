@@ -1,0 +1,28 @@
+# Explora API test suite
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NjNhNzg2ZDM1ZDgzZTlmZTQ5M2I0MSIsImlhdCI6MTc1MTM2MTQxNH0.Shs8lOyv6jAhmMaUXjXcrO-HNRRNhFNryCWzh4rIUOw
+
+### 1) Registrazione utente
+POST http://localhost:3000/api/users/register
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "Passw0rd!"
+}
+
+### 2) Login utente
+POST http://localhost:3000/api/users/login
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "Passw0rd!"
+}
+
+### 3) Statistiche eventi per categoria
+GET http://localhost:3000/api/events/stats/category
+Authorization: Bearer {{token}}
+
+### 4) Eventi più vicini
+GET http://localhost:3000/api/events/stats/closest?lng=12.4923&lat=41.8902&maxDistance=10000&limit=5
+Authorization: Bearer {{token}}
