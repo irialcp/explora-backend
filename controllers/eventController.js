@@ -104,44 +104,63 @@ exports.closestEvents = async (req, res) => {
   }
 };
 
-// Statistiche complete con facet
+// Statistiche
 exports.comprehensiveStats = async (req, res) => {
   try {
-    const { lng, lat } = req.query;
+    const { lng, lat, maxDistance = 10000, limit = 5 } = req.query;
     const now = new Date();
-    const facet = {
-      byCategory: [
-        { $match: { date: { $gte: now } } },
-        { $group: { _id: "$category", count: { $sum: 1 } } },
-        { $sort: { count: -1 } }
-      ],
-      upcoming: [
-        { $match: { date: { $gte: now } } },
-        { $sort: { date: 1 } },
-        { $limit: 5 }
-      ]
-    };
 
+    // 1) Aggregation per byCategory + upcoming (su tutto il DB)
+    const facetStage = {
+      $facet: {
+        byCategory: [
+          { $match: { date: { $gte: now } } },
+          { $group:    { _id: "$category", count: { $sum: 1 } } },
+          { $sort:     { count: -1 } }
+        ],
+        upcoming: [
+          { $match: { date: { $gte: now } } },
+          { $sort:  { date: 1 } },
+          { $limit: 5 }
+        ]
+      }
+    };
+    const [basicStats] = await Event.aggregate([ facetStage ]);
+
+    // 2) Se sono passate coordinate, fai la geo-aggregation separata
+    let closest = [];
     if (lng && lat) {
-      facet.closest = [
+      const coords = [ parseFloat(lng), parseFloat(lat) ];
+      closest = await Event.aggregate([
         {
           $geoNear: {
-            near:           { type: "Point", coordinates: [ parseFloat(lng), parseFloat(lat) ] },
-            distanceField:  "distance",
-            spherical:      true,
-            limit:          5
+            near:          { type: "Point", coordinates: coords },
+            distanceField: "distance",
+            maxDistance:   parseFloat(maxDistance),
+            spherical:     true
           }
         },
-        { $project: { title:1, distance:1 } }
-      ];
+        { $limit: parseInt(limit) },
+        { $project: { _id: 0, title: 1, distance: 1 } }
+      ]);
     }
 
-    const [stats] = await Event.aggregate([{ $facet: facet }]);
-    res.json(stats);
+    // 3) Ricompone il JSON finale
+    const result = {
+      byCategory: basicStats.byCategory,
+      upcoming:   basicStats.upcoming
+    };
+    if (closest.length) {
+      result.closest = closest;
+    }
+
+    return res.json(result);
+
   } catch (err) {
     console.error('❌ Errore comprehensiveStats:', err);
-    res.status(500).json({ message: 'Errore comprehensiveStats' });
+    return res.status(500).json({ message: 'Errore comprehensiveStats' });
   }
 };
+
 
 
