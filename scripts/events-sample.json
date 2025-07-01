@@ -1,0 +1,62 @@
+[
+  {
+    "title": "Concerto Jazz all'Arena di Verona",
+    "description": "Serata jazz con artisti internazionali all'aperto",
+    "category": "musica",
+    "location": {
+      "type": "Point",
+      "coordinates": [10.9903, 45.4384],
+      "city": "Verona"
+    },
+    "date": "2025-07-15T21:00:00Z",
+    "source": "manuale"
+  },
+  {
+    "title": "Mostra d'Arte Contemporanea al MAXXI",
+    "description": "Collettiva di giovani artisti italiani",
+    "category": "arte",
+    "location": {
+      "type": "Point",
+      "coordinates": [12.4923, 41.9058],
+      "city": "Roma"
+    },
+    "date": "2025-07-10T10:00:00Z",
+    "source": "scraper"
+  },
+  {
+    "title": "Serata di Parkour al Parco Sempione",
+    "description": "Allenamento aperto di parkour e free-running",
+    "category": "sport",
+    "location": {
+      "type": "Point",
+      "coordinates": [9.1829, 45.4668],
+      "city": "Milano"
+    },
+    "date": "2025-07-12T18:30:00Z",
+    "source": "AI"
+  },
+  {
+    "title": "Degustazione Vini in Cantina",
+    "description": "Tour e degustazione dei migliori vini locali",
+    "category": "gastronomia",
+    "location": {
+      "type": "Point",
+      "coordinates": [14.2681, 40.8518],
+      "city": "Napoli"
+    },
+    "date": "2025-07-20T17:00:00Z",
+    "source": "manuale"
+  },
+  {
+    "title": "Tour Guidato del Colosseo",
+    "description": "Visita serale con guida archeologica",
+    "category": "cultura",
+    "location": {
+      "type": "Point",
+      "coordinates": [12.4922, 41.8902],
+      "city": "Roma"
+    },
+    "date": "2025-07-11T20:00:00Z",
+    "source": "scraper"
+  }
+]

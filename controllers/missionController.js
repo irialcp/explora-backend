@@ -29,7 +29,7 @@ exports.completeMission = async (req, res) => {
     }
 
     // aggiungi missione completata + punti
-    user.completedMissions.push({ missionId });
+    user.completedMissions.push({ missionId: mission._id });
     user.points += mission.points;
 
     await user.save();
@@ -40,3 +40,22 @@ exports.completeMission = async (req, res) => {
     res.status(500).json({ message: 'Errore nel completare la missione' });
   }
 };
+
+// GET /api/missions/today/count
+exports.countTodayMissions = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    const today = new Date();
+    today.setHours(0,0,0,0);
+
+    const count = await Mission.countDocuments({ daily: true });
+    const doneToday = user.completedMissions.filter(cm => {
+      return cm.completedAt >= today;
+    }).length;
+
+    res.json({ totalDaily: count, completedToday: doneToday });
+  } catch (err) {
+    res.status(500).json({ message: 'Errore nel conteggio missioni' });
+  }
+};
+

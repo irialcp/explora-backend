@@ -2,17 +2,27 @@
 const mongoose = require('mongoose');
 
 const eventSchema = new mongoose.Schema({
-  title: { type: String, required: true },
+  title:   { type: String, required: true },
   description: String,
-  category: String, // es: "musica", "arte", "parkour"
+  category:    String,
   location: {
-    lat: Number,
-    lng: Number,
+    type: { 
+      type: String, 
+      enum: ['Point'], 
+      default: 'Point' 
+    },
+    coordinates: {
+      type: [Number],    // [lng, lat]
+      required: true
+    },
     city: String
   },
-  date: { type: Date, required: true },
-  source: String, // es: "AI", "scraper", "manuale"
-  createdAt: { type: Date, default: Date.now }
+  date:        { type: Date, required: true },
+  source:      String,
+  createdAt:   { type: Date, default: Date.now }
 });
+
+// Crea l'indice geospaziale
+eventSchema.index({ location: '2dsphere' });
 
 module.exports = mongoose.model('Event', eventSchema);
